@@ -5,35 +5,35 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.ferhatozcelik.webnavite.databinding.ActivityMainBinding
+import com.ferhatozcelik.webviewbridge.AndroidWebViewBridgeHelper
 
-
+/**
+ * Sample app demonstrating how to use the `:webviewbridge` library.
+ */
 class MainActivity : AppCompatActivity() {
+
     private lateinit var mainBinding: ActivityMainBinding
 
-    // Json Listt
-    private var paramOne:String = "buttontest" //Button Id
-    private var paramProId:String = "proId" // Ürün ID
-    private var paramHtml:String = Cons.HTML //Full Html
+    // Button id inside the demo HTML.
+    private val buttonId = "buttontest"
 
-    @SuppressLint("JavascriptInterface", "SetJavaScriptEnabled")
+    // Simulated product id.
+    private val productId = "proId"
+
+    @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mainBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(mainBinding.root)
 
         mainBinding.apply {
-            val androidHelper =  AndroidWebViewBridgeHelper(Cons.HTML, webView)
+            val bridge = AndroidWebViewBridgeHelper(Cons.HTML, webView)
 
-            //TODO tag remove ? HTML uniq mi
-            androidHelper.setClickEvent("a", paramOne, object : WebClickInterface {
-                override fun onWebClick() {
-                    Toast.makeText(applicationContext, "Purchased: $paramProId", Toast.LENGTH_SHORT).show()
-                }
-            })
+            bridge.setClickEvent("a", buttonId) {
+                Toast.makeText(applicationContext, "Purchased: $productId", Toast.LENGTH_SHORT).show()
+            }
 
-            webView.loadDataWithBaseURL(null, androidHelper.getHTML(),"text/html", "UTF-8", null)
-
+            webView.loadDataWithBaseURL(null, bridge.getHTML(), "text/html", "UTF-8", null)
         }
     }
-
 }
